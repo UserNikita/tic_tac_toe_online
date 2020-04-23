@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  web:
+    container_name: web
+    build:
+      context: .
+    ports:
+      - 8080:8080
+    environment:
+      - PYTHONASYNCIODEBUG=1
+    volumes:
+      - ./app:/app

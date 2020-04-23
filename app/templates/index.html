@@ -1,0 +1,409 @@
+<html>
+<head>
+    <title>Tic tac toe</title>
+    <meta name="viewport" content="width=device-width, user-scalable=yes">
+    <style>
+        body {
+            font-family: Consolas, Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+
+        .info table {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            font-size: 30px;
+            text-transform: uppercase;
+            border-spacing: 10px;
+        }
+
+        .info td {
+            padding: 8px 20px;
+            width: 50%;
+            border-top: 1px solid #eeeeee;
+            border-bottom: 2px solid #eeeeee;
+            border-radius: 8px;
+            box-shadow: 0 4px 5px rgba(0, 0, 0, .16);
+        }
+
+        .info td.enter {
+            border-bottom: 2px solid #14bdac;
+        }
+
+        .info svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .info path {
+            fill: none;
+            stroke: #555555;
+            stroke-dasharray: 300;
+            stroke-dashoffset: 0;
+            stroke-width: 10px;
+        }
+
+        #restart {
+            font-size: 30px;
+            text-align: center;
+            white-space: nowrap;
+            text-transform: uppercase;
+            color: #14bdac;
+            cursor: pointer;
+            font-weight: bold;
+            border-top: 1px solid #eeeeee;
+            border-bottom: 2px solid #eeeeee;
+            border-radius: 8px;
+            box-shadow: 0 4px 5px rgba(0, 0, 0, .16);
+            padding: 8px;
+            margin: 5px auto;
+            width: 50%;
+            user-select: none;
+        }
+
+        #game_board {
+            background: #14bdac;
+            display: block;
+            padding: 5% 8px;
+            border-radius: 8px;
+            width: 50%;
+            margin: auto;
+        }
+
+        #game_board table {
+            width: 400px;
+            height: 400px;
+            margin: auto;
+            border: none;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        #game_board td {
+            text-align: center;
+            border: 10px solid #0da192;
+            width: 33.333333%;
+            height: 33.333333%;
+        }
+
+        #game_board td.right {
+            border-right: none;
+        }
+
+        #game_board td.left {
+            border-left: none;
+        }
+
+        #game_board td.bottom {
+            border-bottom: none;
+        }
+
+        #game_board td.top {
+            border-top: none;
+        }
+
+        svg {
+            width: 80%;
+            height: 80%;
+        }
+
+        .svg-template {
+            display: none;
+        }
+
+        #game_board .svg-x path {
+            stroke: rgb(84, 84, 84);
+            stroke-dasharray: 135.764;
+            stroke-dashoffset: 0;
+            stroke-width: 8px;
+        }
+
+        #game_board .svg-o path {
+            fill: none;
+            stroke: rgb(242, 235, 211);
+            stroke-dasharray: 301.635;
+            stroke-dashoffset: 0;
+            stroke-width: 10px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 250%;
+        }
+
+        #notification {
+            font-size: 150%;
+            text-align: center;
+            color: rgba(0, 0, 0, 0.54);
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="svg-template">
+    <svg aria-label="X"
+         id="svg_x"
+         class="svg-x"
+         role="img"
+         viewBox="0 0 128 128">
+        <path d="M16,16L112,112"></path>
+        <path d="M112,16L16,112"></path>
+    </svg>
+    <svg aria-label="O"
+         id="svg_o"
+         class="svg-o"
+         role="img"
+         viewBox="0 0 128 128">
+        <path d="M64,16A48,48 0 1,0 64,112A48,48 0 1,0 64,16"></path>
+    </svg>
+</div>
+<div class="info">
+    <table>
+        <tbody>
+        <tr>
+            <td id="you_td" class="enter">
+                <span id="you_sign">
+                    <svg aria-label="X"
+                         class="svg-x"
+                         role="img"
+                         viewBox="0 0 128 128">
+                        <path d="M16,16L112,112"></path>
+                        <path d="M112,16L16,112"></path>
+                    </svg>
+                </span>
+                <span>You</span>
+            </td>
+            <td id="opponent_td">
+                <span id="opponent_sign">
+                    <svg aria-label="O"
+                         class="svg-o"
+                         role="img"
+                         viewBox="0 0 128 128">
+                        <path d="M64,16A48,48 0 1,0 64,112A48,48 0 1,0 64,16"></path>
+                    </svg>
+                </span>
+                <span>Opponent</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="score">
+    <span id="you_score">0</span>
+    <span>:</span>
+    <span id="opponent_score">0</span>
+</div>
+<div id="notification">
+    Ожидается подключение соперника
+</div>
+<div id="game_board">
+    <table>
+        <tbody>
+        <tr>
+            <td id="00" class="top left"></td>
+            <td id="01" class="top"></td>
+            <td id="02" class="top right"></td>
+        </tr>
+        <tr>
+            <td id="10" class="middle left"></td>
+            <td id="11" class="middle"></td>
+            <td id="12" class="middle right"></td>
+        </tr>
+        <tr>
+            <td id="20" class="bottom left"></td>
+            <td id="21" class="bottom"></td>
+            <td id="22" class="bottom right"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+    <div id="restart">Начать заново</div>
+</div>
+<script>
+    // Состояния игры
+    const STATE_WAIT_OPPONENT = 0;
+    const STATE_WAIT_YOU_ENTER = 1;
+    const STATE_WAIT_OPPONENT_ENTER = 2;
+    const STATE_YOU_WIN = 3;
+    const STATE_YOU_LOSE = 4;
+    const STATE_OPPONENT_DISCONNECTED = 5;
+
+    // Состояния ячеек
+    const EMPTY = 0;
+    const SIGN_X = 1;
+    const SIGN_O = 2;
+
+    let notifications = {};
+    notifications[STATE_WAIT_OPPONENT] = "Ожидается подключение соперника";
+    notifications[STATE_WAIT_YOU_ENTER] = "Ваш ход";
+    notifications[STATE_WAIT_OPPONENT_ENTER] = "Ход соперника";
+    notifications[STATE_YOU_WIN] = "Вы победили";
+    notifications[STATE_YOU_LOSE] = "Вы проиграли";
+    notifications[STATE_OPPONENT_DISCONNECTED] = "Соперник отключился";
+
+    let youName = "";
+    let opponentName = null;
+    let youSign;
+    let dashboard = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+    let state = STATE_WAIT_OPPONENT;
+    let score = {'you': 0, 'opponent': 0}
+
+
+    function updateUI() {
+        document.getElementById('you_score').innerText = score['you'];
+        document.getElementById('opponent_score').innerText = score['opponent'];
+        document.getElementById('notification').innerText = notifications[state];
+
+        let you_td = document.getElementById('you_td');
+        let opponent_td = document.getElementById('opponent_td');
+        if (state === STATE_WAIT_YOU_ENTER) {
+            you_td.classList.add('enter');
+            opponent_td.classList.remove('enter');
+        } else if (state === STATE_WAIT_OPPONENT_ENTER) {
+            you_td.classList.remove('enter');
+            opponent_td.classList.add('enter');
+        }
+    }
+
+    function setSigns() {
+        let svg_x = document.getElementById('svg_x');
+        let svg_o = document.getElementById('svg_o');
+        if (youSign === SIGN_X) {
+            document.getElementById('you_sign').innerHTML = svg_x.outerHTML;
+            document.getElementById('opponent_sign').innerHTML = svg_o.outerHTML;
+        } else {
+            document.getElementById('you_sign').innerHTML = svg_o.outerHTML;
+            document.getElementById('opponent_sign').innerHTML = svg_x.outerHTML;
+        }
+    }
+
+    function clearField() {
+        dashboard = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+        document.querySelectorAll('#game_board td').forEach((td) => td.innerHTML = "")
+    }
+
+    function setInField(sign, i, j) {
+        if (dashboard[i][j] === EMPTY) {
+            dashboard[i][j] = sign;
+            let svg;
+            if (sign === SIGN_X) {
+                svg = document.getElementById('svg_x');
+            } else {
+                svg = document.getElementById('svg_o')
+            }
+            document.getElementById(i + j).appendChild(svg.cloneNode(true));
+            return true
+        }
+        return false
+    }
+
+    function clickField(event) {
+        let field = event.target;
+        if (field.tagName === 'TD' && state === STATE_WAIT_YOU_ENTER) {
+            let i = field.id[0];
+            let j = field.id[1];
+            let result = setInField(youSign, i, j);
+            if (result === true) {
+                let actionData = {
+                    action: 'click',
+                    coordinates: {
+                        i: i,
+                        j: j,
+                    },
+                };
+                sendAction(actionData);
+            }
+        }
+    }
+
+    document.querySelectorAll('#game_board table td').forEach(
+        (element) => element.addEventListener('click', clickField)
+    )
+
+    document.getElementById('restart').addEventListener('click', function (event) {
+        disconnect();
+        connect();
+        clearField();
+        updateUI();
+        setSigns();
+    })
+</script>
+<script>
+    let ws = null;
+
+    function ws_connect() {
+        const wsUri = (window.location.protocol == 'https:' && 'wss://' || 'ws://') + window.location.host;
+        ws = new WebSocket(wsUri);
+        ws.onopen = function () {
+            state = STATE_WAIT_OPPONENT;
+        };
+        ws.onmessage = function (e) {
+            let data = JSON.parse(e.data);
+            console.log(data);
+            switch (data.action) {
+                case 'connect':
+                    youName = data.name;
+                    opponentName = data.opponentName !== undefined ? data.opponentName : "";
+                    youSign = data.sign;
+                    if (opponentName !== null) {
+                        state = STATE_WAIT_OPPONENT_ENTER;
+                    }
+                    setSigns();
+                    break;
+                case 'disconnect':
+                    youName = data.name;
+                    opponentName = data.name;
+                    state = STATE_OPPONENT_DISCONNECTED;
+                    break;
+                case 'join':
+                    opponentName = data.opponentName;
+                    state = STATE_WAIT_YOU_ENTER;
+                    break;
+                case 'click':
+                    state = STATE_WAIT_YOU_ENTER;
+                    let opponentSign = youSign === SIGN_X ? SIGN_O : SIGN_X;
+                    setInField(opponentSign, data.coordinates.i, data.coordinates.j);
+                    break;
+                case 'win':
+                    score.you += 1;
+                    state = STATE_YOU_WIN;
+                    break;
+                case 'lose':
+                    score.opponent += 1;
+                    state = STATE_YOU_LOSE;
+                    break;
+            }
+            updateUI();
+        };
+        ws.onclose = function () {
+        };
+        ws.onerror = function (event) {
+            console.log(event);
+        }
+    }
+
+    function disconnect() {
+        if (ws != null) {
+            ws.close();
+            ws = null;
+        }
+    }
+
+    function connect() {
+        if (ws == null) {
+            ws_connect();
+        }
+    }
+
+    function sendAction(obj) {
+        state = STATE_WAIT_OPPONENT_ENTER;
+        let data = JSON.stringify(obj)
+        ws.send(data);
+    }
+
+    document.onreadystatechange = connect;
+</script>
+</body>
+</html>
